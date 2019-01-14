@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "lib",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "target": "es6",
+    "lib": ["es2015", "es2017", "dom"],
+    "removeComments": true,
+    "allowSyntheticDefaultImports": false,
+    "jsx": "react",
+    "allowJs": true,
+    "paths": {
+      "components/*": ["src/renderer/components/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "lib"],
+  "files": ["src/renderer/index.tsx", "src/main/index.ts"]
+}

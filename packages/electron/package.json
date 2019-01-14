@@ -1,0 +1,76 @@
+{
+  "name": "@monorepo/electron",
+  "version": "1.0.0",
+  "author": {
+    "name": "Nima Alikhani",
+    "email": "nimaaalikhani5@gmail.com"
+  },
+  "homepage": "./",
+  "main": "lib/main",
+  "license": "MIT",
+  "scripts": {
+    "build:ts": "rimraf lib && tsc",
+    "start": "yarn build:ts && concurrently \"yarn start:react\" \"wait-on http://localhost:8080/ && yarn start:electron\"",
+    "start:react": "webpack-dev-server --config webpack.dev.js --open --hot",
+    "start:electron": "electron lib/main",
+    "build": "npm run build:ts && npm run build:webpack && cp -r dist lib && rimraf ./build-electron",
+    "build:webpack": "rimraf ./dist && NODE_ENV=production webpack --config webpack.prod.js && cp -r static/* dist",
+    "release": "npm run build && DEBUG=electron-builder:* ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true npm run publish",
+    "publish": "AWS_ACCESS_KEY_ID=XXXX AWS_SECRET_ACCESS_KEY=XXXX build -ml -p always",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^1.0.0",
+    "concurrently": "^4.1.0",
+    "electron": "^4.0.1",
+    "electron-builder": "^20.38.4",
+    "electron-devtools-installer": "^2.2.4",
+    "file-loader": "^3.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "rimraf": "^2.6.3",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.2",
+    "wait-on": "^3.2.0",
+    "webpack": "4.19.1",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14",
+    "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "@monorepo/ui": "0.1.0",
+    "electron-is-dev": "^1.0.1",
+    "electron-log": "^2.2.17",
+    "electron-updater": "^4.0.6",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  },
+  "build": {
+    "appId": "com.alikhani.monorepo",
+    "files": [
+      "lib/**/!(*.map)"
+    ],
+    "directories": {
+      "buildResources": "dist",
+      "output": "build-electron"
+    },
+    "mac": {
+      "category": "your.app.category.type",
+      "target": [
+        "zip",
+        "dmg"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility"
+    },
+    "publish": {
+      "provider": "s3",
+      "bucket": "bucket-name",
+      "path": "monorepo-test"
+    }
+  }
+}
